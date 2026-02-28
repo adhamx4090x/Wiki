@@ -1,0 +1,2223 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>حاسبة الذهب والفضة الشاملة - Gold & Silver Calculator</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+:root {
+    --gold-primary: #d4af37;
+    --gold-light: #f4e4bc;
+    --gold-dark: #aa8c2c;
+    --silver-primary: #c0c0c0;
+    --silver-light: #e8e8e8;
+    --silver-dark: #808080;
+    --bg-dark: #0f0f1a;
+    --bg-card: #16213e;
+    --bg-card-light: #1e2a4a;
+    --text-light: #eaeaea;
+    --text-muted: #a0a0a0;
+    --accent: #0f3460;
+    --success: #4ecca3;
+    --error: #e94560;
+    --warning: #ffc107;
+    --info: #2196f3;
+    --local-color: #4caf50;
+    --global-color: #2196f3;
+    --real-color: #e91e63;
+    --premium-color: #ff9800;
+    --comparison-bg: #e91e63;
+}
+body {
+    background: linear-gradient(135deg, #0f0f1a 0%, #1a1a2e 50%, #0d0d1a 100%);
+    min-height: 100vh;
+    padding: 20px;
+    color: var(--text-light);
+}
+.container {
+    max-width: 1800px;
+    margin: 0 auto;
+}
+/* Language Toggle */
+.lang-toggle {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 1000;
+    display: flex;
+    gap: 10px;
+}
+.lang-btn {
+    padding: 10px 20px;
+    border: 2px solid var(--gold-primary);
+    background: var(--bg-card);
+    color: var(--gold-primary);
+    border-radius: 25px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+.lang-btn:hover, .lang-btn.active {
+    background: var(--gold-primary);
+    color: var(--bg-dark);
+}
+/* Header */
+header {
+    text-align: center;
+    margin-bottom: 40px;
+    padding: 30px;
+    background: linear-gradient(135deg, var(--bg-card) 0%, var(--bg-card-light) 100%);
+    border-radius: 20px;
+    border: 1px solid rgba(212, 175, 55, 0.3);
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+}
+header h1 {
+    font-size: 2.5rem;
+    background: linear-gradient(135deg, var(--gold-primary) 0%, #fff 50%, var(--gold-primary) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 10px;
+}
+header p {
+    color: var(--text-muted);
+    font-size: 1.1rem;
+}
+/* Input Section */
+.input-section {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px;
+    margin-bottom: 40px;
+}
+.input-card {
+    background: var(--bg-card);
+    padding: 25px;
+    border-radius: 15px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    transition: all 0.3s ease;
+}
+.input-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+}
+.input-card.exchange-rate {
+    border-color: var(--success);
+    background: linear-gradient(135deg, var(--bg-card) 0%, rgba(78, 204, 163, 0.1) 100%);
+}
+.input-card.premium-input {
+    border-color: var(--premium-color);
+    background: linear-gradient(135deg, var(--bg-card) 0%, rgba(255, 152, 0, 0.1) 100%);
+}
+.input-card label {
+    display: block;
+    margin-bottom: 12px;
+    font-weight: 600;
+    color: var(--text-light);
+    font-size: 1rem;
+}
+.input-card label .en {
+    display: block;
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    margin-top: 4px;
+}
+.input-card input {
+    width: 100%;
+    padding: 15px;
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    background: rgba(0, 0, 0, 0.3);
+    color: var(--text-light);
+    font-size: 1.2rem;
+    transition: all 0.3s ease;
+}
+.input-card input:focus {
+    outline: none;
+    border-color: var(--gold-primary);
+    box-shadow: 0 0 20px rgba(212, 175, 55, 0.2);
+}
+.input-card .unit {
+    display: block;
+    margin-top: 8px;
+    font-size: 0.9rem;
+    color: var(--text-muted);
+}
+/* Metal Sections */
+.metal-section {
+    margin-bottom: 50px;
+}
+.metal-title {
+    font-size: 2.2rem;
+    margin-bottom: 30px;
+    padding: 25px;
+    border-radius: 15px;
+    text-align: center;
+    font-weight: 700;
+}
+.gold-metal .metal-title {
+    background: linear-gradient(135deg, var(--gold-dark) 0%, var(--gold-primary) 50%, var(--gold-light) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+.silver-metal .metal-title {
+    background: linear-gradient(135deg, var(--silver-dark) 0%, var(--silver-primary) 50%, var(--silver-light) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+/* Price Type Section */
+.price-type-section {
+    margin-bottom: 30px;
+}
+.price-type-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 20px;
+    border-radius: 12px 12px 0 0;
+}
+.price-type-header.local {
+    background: linear-gradient(135deg, var(--local-color) 0%, #81c784 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+.price-type-header.global {
+    background: linear-gradient(135deg, var(--global-color) 0%, #64b5f6 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+.price-type-header.comparison {
+    background: linear-gradient(135deg, var(--comparison-bg) 0%, #f48fb1 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+.price-type-header.real {
+    background: linear-gradient(135deg, var(--premium-color) 0%, #ffb74d 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+.price-type-header h3 {
+    font-size: 1.5rem;
+    margin: 0;
+}
+.price-type-content {
+    background: var(--bg-card);
+    padding: 25px;
+    border-radius: 0 0 12px 12px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-top: none;
+}
+.price-type-content.local { border-color: rgba(76, 175, 80, 0.3); }
+.price-type-content.global { border-color: rgba(33, 150, 243, 0.3); }
+.price-type-content.comparison { border-color: rgba(233, 30, 99, 0.3); }
+.price-type-content.real { border-color: rgba(255, 152, 0, 0.3); }
+/* Results Grid */
+.results-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+}
+.result-card {
+    background: rgba(0, 0, 0, 0.3);
+    padding: 20px;
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+.result-card.gold { border-color: rgba(212, 175, 55, 0.4); }
+.result-card.silver { border-color: rgba(192, 192, 192, 0.4); }
+.result-card h4 {
+    font-size: 1.1rem;
+    margin-bottom: 15px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+.result-card.gold h4 { color: var(--gold-primary); }
+.result-card.silver h4 { color: var(--silver-primary); }
+/* Result Items */
+.result-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+.result-item:last-child { border-bottom: none; }
+.result-item .label { color: var(--text-muted); font-size: 0.9rem; }
+.result-item .value { font-weight: 700; font-size: 1rem; }
+.result-item .value.gold-value { color: var(--gold-primary); }
+.result-item .value.silver-value { color: var(--silver-primary); }
+.result-item .value.success-value { color: var(--success); }
+.result-item .value.warning-value { color: var(--warning); }
+/* Action Buttons - Hide during screenshot */
+.action-buttons {
+    display: flex;
+    gap: 8px;
+}
+.action-btn {
+    padding: 6px 12px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.8rem;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+.copy-btn { background: var(--accent); color: var(--text-light); }
+.download-btn { background: var(--success); color: var(--bg-dark); }
+.copy-btn:hover { background: #1a4a7a; }
+.download-btn:hover { background: #3dbb92; }
+/* Hide buttons during screenshot capture */
+.action-buttons.hide-for-screenshot,
+.action-btn.hide-for-screenshot {
+    display: none !important;
+}
+/* Code Block */
+.code-block {
+    background: #0d0d1a;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    padding: 15px;
+    margin-top: 15px;
+    font-family: 'Courier New', monospace;
+    font-size: 0.85rem;
+    overflow-x: auto;
+    position: relative;
+}
+.code-block pre {
+    margin: 0;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+}
+.code-block .copy-code-btn,
+.code-block .download-code-btn {
+    position: absolute;
+    top: 8px;
+    padding: 4px 8px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.7rem;
+}
+.code-block .copy-code-btn {
+    right: 8px;
+    background: var(--accent);
+    color: white;
+}
+.code-block .download-code-btn {
+    right: 70px;
+    background: var(--success);
+    color: var(--bg-dark);
+}
+/* Hide code block buttons during screenshot */
+.code-block .copy-code-btn.hide-for-screenshot,
+.code-block .download-code-btn.hide-for-screenshot {
+    display: none !important;
+}
+/* Karat Grid - 4 Section Design */
+.karat-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 15px;
+    margin-top: 15px;
+}
+.karat-card {
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 12px;
+    border: 1px solid rgba(212, 175, 55, 0.4);
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+.karat-card:hover {
+    transform: scale(1.03);
+    box-shadow: 0 10px 30px rgba(212, 175, 55, 0.2);
+}
+.karat-card-header {
+    background: linear-gradient(135deg, var(--gold-dark), var(--gold-primary));
+    padding: 10px;
+    text-align: center;
+}
+.karat-card-header .karat {
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: #fff;
+}
+.karat-card-body {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr 1fr;
+}
+.karat-section {
+    padding: 10px;
+    text-align: center;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+.karat-section.local-egp {
+    background: rgba(76, 175, 80, 0.2);
+    border-right: 1px solid rgba(255, 255, 255, 0.1);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+.karat-section.global-egp {
+    background: rgba(33, 150, 243, 0.2);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+.karat-section.local-usd {
+    background: rgba(76, 175, 80, 0.1);
+    border-right: 1px solid rgba(255, 255, 255, 0.1);
+}
+.karat-section.global-usd {
+    background: rgba(33, 150, 243, 0.1);
+}
+.karat-section .section-label {
+    font-size: 0.65rem;
+    color: var(--text-muted);
+    margin-bottom: 4px;
+    text-transform: uppercase;
+}
+.karat-section .section-value {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--success);
+}
+/* Silver Karat Card */
+.silver-karat-card {
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 12px;
+    border: 1px solid rgba(192, 192, 192, 0.4);
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+.silver-karat-card:hover {
+    transform: scale(1.03);
+    box-shadow: 0 10px 30px rgba(192, 192, 192, 0.2);
+}
+.silver-karat-card-header {
+    background: linear-gradient(135deg, var(--silver-dark), var(--silver-primary));
+    padding: 10px;
+    text-align: center;
+}
+.silver-karat-card-header .purity {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: #fff;
+}
+.silver-karat-card-body {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr 1fr;
+}
+.silver-karat-section {
+    padding: 10px;
+    text-align: center;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+.silver-karat-section.local-egp {
+    background: rgba(76, 175, 80, 0.2);
+    border-right: 1px solid rgba(255, 255, 255, 0.1);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+.silver-karat-section.global-egp {
+    background: rgba(33, 150, 243, 0.2);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+.silver-karat-section.local-usd {
+    background: rgba(76, 175, 80, 0.1);
+    border-right: 1px solid rgba(255, 255, 255, 0.1);
+}
+.silver-karat-section.global-usd {
+    background: rgba(33, 150, 243, 0.1);
+}
+.silver-karat-section .section-label {
+    font-size: 0.65rem;
+    color: var(--text-muted);
+    margin-bottom: 4px;
+    text-transform: uppercase;
+}
+.silver-karat-section .section-value {
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: var(--success);
+}
+/* Coins Section */
+.coins-section {
+    margin-top: 25px;
+    padding: 20px;
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 12px;
+    border: 1px solid rgba(212, 175, 55, 0.3);
+}
+.coins-section h4 {
+    color: var(--gold-primary);
+    margin-bottom: 15px;
+    font-size: 1.1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.coins-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 15px;
+}
+.coin-card {
+    background: rgba(0, 0, 0, 0.3);
+    padding: 15px;
+    border-radius: 8px;
+    text-align: center;
+    border: 1px solid var(--gold-primary);
+    transition: all 0.3s ease;
+}
+.coin-card:hover {
+    background: rgba(212, 175, 55, 0.1);
+    transform: scale(1.05);
+}
+.coin-card .coin-name {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--gold-primary);
+    margin-bottom: 6px;
+}
+.coin-card .coin-price {
+    font-size: 1.1rem;
+    color: var(--success);
+    font-weight: 700;
+}
+/* Dollar Price & Gap Section */
+.dollar-gap-section {
+    margin-top: 30px;
+    padding: 25px;
+    background: var(--bg-card);
+    border-radius: 15px;
+    border: 1px solid rgba(33, 150, 243, 0.3);
+}
+.dollar-gap-section h3 {
+    color: #2196f3;
+    margin-bottom: 20px;
+    font-size: 1.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.dollar-gap-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+}
+.dollar-gap-card {
+    background: rgba(0, 0, 0, 0.3);
+    padding: 20px;
+    border-radius: 12px;
+    border: 1px solid rgba(33, 150, 243, 0.3);
+}
+.dollar-gap-card.gold { border-color: rgba(212, 175, 55, 0.4); }
+.dollar-gap-card.silver { border-color: rgba(192, 192, 192, 0.4); }
+.dollar-gap-card h4 {
+    font-size: 1.2rem;
+    margin-bottom: 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.dollar-gap-card.gold h4 { color: var(--gold-primary); }
+.dollar-gap-card.silver h4 { color: var(--silver-primary); }
+.dollar-gap-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+.dollar-gap-item:last-child { border-bottom: none; }
+.dollar-gap-item .label { color: var(--text-muted); }
+.dollar-gap-item .value { font-weight: 700; color: var(--success); }
+.dollar-gap-item .value.warning { color: var(--warning); }
+.dollar-gap-item .value.error { color: var(--error); }
+/* Premium Section */
+.premium-section {
+    margin-top: 30px;
+    padding: 25px;
+    background: var(--bg-card);
+    border-radius: 15px;
+    border: 1px solid rgba(255, 152, 0, 0.3);
+}
+.premium-section h3 {
+    color: var(--premium-color);
+    margin-bottom: 20px;
+    font-size: 1.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.premium-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 15px;
+}
+.premium-card {
+    background: rgba(0, 0, 0, 0.3);
+    padding: 15px;
+    border-radius: 10px;
+    border: 1px solid rgba(255, 152, 0, 0.3);
+}
+.premium-card .premium-name {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    margin-bottom: 8px;
+}
+.premium-card .premium-formula {
+    font-size: 0.9rem;
+    color: #ffb74d;
+    font-family: 'Courier New', monospace;
+    margin-bottom: 8px;
+}
+.premium-card .premium-calc {
+    font-size: 1rem;
+    color: var(--success);
+    font-weight: 600;
+}
+/* Formula Section */
+.formula-section {
+    margin-top: 30px;
+    padding: 25px;
+    background: var(--bg-card);
+    border-radius: 15px;
+    border: 1px solid rgba(156, 39, 176, 0.3);
+}
+.formula-section h3 {
+    color: #9c27b0;
+    margin-bottom: 20px;
+    font-size: 1.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.formula-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 15px;
+}
+.formula-card {
+    background: rgba(0, 0, 0, 0.3);
+    padding: 15px;
+    border-radius: 10px;
+    border: 1px solid rgba(156, 39, 176, 0.3);
+    transition: all 0.3s ease;
+}
+.formula-card:hover {
+    background: rgba(156, 39, 176, 0.1);
+    transform: translateY(-3px);
+}
+.formula-card .formula-name {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    margin-bottom: 8px;
+}
+.formula-card .formula-text {
+    font-size: 1rem;
+    color: #ce93d8;
+    font-family: 'Courier New', monospace;
+    margin-bottom: 8px;
+}
+.formula-card .formula-calc {
+    font-size: 0.95rem;
+    color: var(--success);
+    font-weight: 600;
+}
+/* Combined Section */
+.combined-section {
+    margin-top: 40px;
+    padding: 30px;
+    background: linear-gradient(135deg, var(--bg-card) 0%, var(--bg-card-light) 100%);
+    border-radius: 20px;
+    border: 2px solid rgba(212, 175, 55, 0.4);
+}
+.combined-section h3 {
+    background: linear-gradient(135deg, var(--gold-primary) 0%, var(--silver-primary) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 25px;
+    font-size: 1.8rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.combined-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+    gap: 25px;
+}
+.combined-card {
+    background: rgba(0, 0, 0, 0.3);
+    padding: 20px;
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+.combined-card.gold { border-color: rgba(212, 175, 55, 0.4); }
+.combined-card.silver { border-color: rgba(192, 192, 192, 0.4); }
+.combined-card h4 {
+    font-size: 1.2rem;
+    margin-bottom: 15px;
+}
+.combined-card.gold h4 { color: var(--gold-primary); }
+.combined-card.silver h4 { color: var(--silver-primary); }
+.combined-formula {
+    padding: 8px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    font-family: 'Courier New', monospace;
+    font-size: 0.9rem;
+}
+.combined-formula:last-child { border-bottom: none; }
+.combined-formula .formula-label { color: var(--text-muted); margin-bottom: 4px; }
+.combined-formula .formula-value { color: var(--success); font-weight: 600; }
+/* Language display */
+[data-lang="en"] { display: none; }
+html[lang="en"] [data-lang="ar"] { display: none; }
+html[lang="en"] [data-lang="en"] { display: block; }
+html[lang="en"] [data-lang="en-inline"] { display: inline; }
+/* Responsive */
+@media (max-width: 768px) {
+    header h1 { font-size: 1.8rem; }
+    .metal-title { font-size: 1.6rem; }
+    .input-section { grid-template-columns: 1fr; }
+    .lang-toggle { top: 10px; right: 10px; }
+    .lang-btn { padding: 8px 15px; font-size: 0.9rem; }
+    .combined-grid { grid-template-columns: 1fr; }
+    .dollar-gap-grid { grid-template-columns: 1fr; }
+    .karat-grid { grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); }
+    .karat-card-body, .silver-karat-card-body { grid-template-columns: 1fr; }
+    .karat-section, .silver-karat-section { border-right: none; }
+}
+</style>
+</head>
+<body>
+<!-- Language Toggle -->
+<div class="lang-toggle">
+    <button class="lang-btn active" onclick="setLanguage('ar')">العربية</button>
+    <button class="lang-btn" onclick="setLanguage('en')">English</button>
+</div>
+
+<div class="container">
+    <header>
+        <h1 data-lang="ar">حاسبة الذهب والفضة الشاملة</h1>
+        <h1 data-lang="en" style="display:none">Comprehensive Gold & Silver Calculator</h1>
+        <p data-lang="ar">جميع المعادلات والأسعار المحلية والعالمية والمقارنة والمصنعية</p>
+        <p data-lang="en" style="display:none">All formulas, local, global, comparison prices and premium calculations</p>
+    </header>
+
+    <!-- Input Section -->
+    <div class="input-section">
+        <div class="input-card exchange-rate">
+            <label data-lang="ar">سعر صرف الدولار (Y) <span class="en">(USD Exchange Rate)</span></label>
+            <label data-lang="en" style="display:none">USD Exchange Rate (Y)</label>
+            <input type="number" id="y" placeholder="50.00" step="0.01" min="0">
+            <span class="unit" data-lang="ar">جنيه مصري / دولار</span>
+            <span class="unit" data-lang="en" style="display:none">EGP / USD</span>
+        </div>
+        <div class="input-card">
+            <label data-lang="ar">سعر أونصة الذهب (AUW) <span class="en">(Gold Ounce)</span></label>
+            <label data-lang="en" style="display:none">Gold Ounce Price (AUW)</label>
+            <input type="number" id="auw" placeholder="2000.00" step="0.01" min="0">
+            <span class="unit">USD / Ounce</span>
+        </div>
+        <div class="input-card">
+            <label data-lang="ar">سعر أونصة الفضة (AGW) <span class="en">(Silver Ounce)</span></label>
+            <label data-lang="en" style="display:none">Silver Ounce Price (AGW)</label>
+            <input type="number" id="agw" placeholder="25.00" step="0.01" min="0">
+            <span class="unit">USD / Ounce</span>
+        </div>
+        <div class="input-card">
+            <label data-lang="ar">سعر جرام الذهب المحلي (XAU) <span class="en">(Local Gold)</span></label>
+            <label data-lang="en" style="display:none">Local Gold Price (XAU)</label>
+            <input type="number" id="xau" placeholder="3500.00" step="0.01" min="0">
+            <span class="unit" data-lang="ar">جنيه / جرام</span>
+            <span class="unit" data-lang="en" style="display:none">EGP / Gram</span>
+        </div>
+        <div class="input-card">
+            <label data-lang="ar">سعر جرام الفضة المحلي (XAG) <span class="en">(Local Silver)</span></label>
+            <label data-lang="en" style="display:none">Local Silver Price (XAG)</label>
+            <input type="number" id="xag" placeholder="50.00" step="0.01" min="0">
+            <span class="unit" data-lang="ar">جنيه / جرام</span>
+            <span class="unit" data-lang="en" style="display:none">EGP / Gram</span>
+        </div>
+        <div class="input-card premium-input">
+            <label data-lang="ar">عدد الجرامات (NG) <span class="en">(Number of Grams)</span></label>
+            <label data-lang="en" style="display:none">Number of Grams (NG)</label>
+            <input type="number" id="ng" placeholder="10.00" step="0.01" min="0">
+            <span class="unit" data-lang="ar">جرام</span>
+            <span class="unit" data-lang="en" style="display:none">Grams</span>
+        </div>
+        <div class="input-card premium-input">
+            <label data-lang="ar">السعر المدفوع (PP) <span class="en">(Price Paid)</span></label>
+            <label data-lang="en" style="display:none">Price Paid (PP)</label>
+            <input type="number" id="pp" placeholder="40000.00" step="0.01" min="0">
+            <span class="unit" data-lang="ar">جنيه مصري</span>
+            <span class="unit" data-lang="en" style="display:none">EGP</span>
+        </div>
+        <div class="input-card premium-input">
+            <label data-lang="ar">العيار الخاص ذهب (EXG) <span class="en">(Custom Gold Karat)</span></label>
+            <label data-lang="en" style="display:none">Custom Gold Karat (EXG)</label>
+            <input type="number" id="exg" placeholder="24" step="1" min="1" max="24">
+            <span class="unit" data-lang="ar">عيار (1-24)</span>
+            <span class="unit" data-lang="en" style="display:none">Karat (1-24)</span>
+        </div>
+        <div class="input-card premium-input">
+            <label data-lang="ar">العيار الخاص فضة (EXS) <span class="en">(Custom Silver Purity)</span></label>
+            <label data-lang="en" style="display:none">Custom Silver Purity (EXS)</label>
+            <input type="number" id="exs" placeholder="925" step="1" min="1" max="1000">
+            <span class="unit" data-lang="ar">عيار (1-1000)</span>
+            <span class="unit" data-lang="en" style="display:none">Purity (1-1000)</span>
+        </div>
+    </div>
+
+    <!-- GOLD SECTION -->
+    <div class="metal-section gold-metal">
+        <h2 class="metal-title">
+            <span data-lang="ar">الذهب - Gold</span>
+            <span data-lang="en" style="display:none">Gold - الذهب</span>
+        </h2>
+
+        <!-- Local Section -->
+        <div class="price-type-section" id="gold-local">
+            <div class="price-type-header local">
+                <h3>
+                    <span data-lang="ar">الأسعار المحلية</span>
+                    <span data-lang="en" style="display:none">Local Prices</span>
+                </h3>
+                <div class="action-buttons">
+                    <button class="action-btn copy-btn" onclick="copySection('gold-local')">⌨</button>
+                    <button class="action-btn download-btn" onclick="downloadSection('gold-local')">🖼</button>
+                </div>
+            </div>
+            <div class="price-type-content local">
+                <div class="results-grid">
+                    <div class="result-card gold">
+                        <h4>
+                            <span data-lang="ar">عيارات الذهب</span>
+                            <span data-lang="en" style="display:none">Gold Karats</span>
+                        </h4>
+                        <div class="result-item"><span class="label">24K</span><span class="value gold-value" id="gold-local-24">-</span></div>
+                        <div class="result-item"><span class="label">22K</span><span class="value gold-value" id="gold-local-22">-</span></div>
+                        <div class="result-item"><span class="label">21K</span><span class="value gold-value" id="gold-local-21">-</span></div>
+                        <div class="result-item"><span class="label">18K</span><span class="value gold-value" id="gold-local-18">-</span></div>
+                        <div class="result-item"><span class="label">14K</span><span class="value gold-value" id="gold-local-14">-</span></div>
+                        <div class="result-item"><span class="label">12K</span><span class="value gold-value" id="gold-local-12">-</span></div>
+                        <div class="result-item"><span class="label">9K</span><span class="value gold-value" id="gold-local-9">-</span></div>
+                        <div class="result-item"><span class="label" data-lang="ar">عيار خاص</span><span class="label" data-lang="en" style="display:none">Custom</span><span class="value gold-value" id="gold-local-exg">-</span></div>
+                        <div class="code-block" id="gold-local-code">
+                            <button class="copy-code-btn" onclick="copyCode('gold-local-code')">⌨</button>
+                            <button class="download-code-btn" onclick="downloadCode('gold-local-code')">🖼</button>
+                            <pre id="gold-local-code-content">-</pre>
+                        </div>
+                    </div>
+                    <div class="result-card gold">
+                        <h4>
+                            <span data-lang="ar">الجنيهات الذهبية</span>
+                            <span data-lang="en" style="display:none">Gold Coins</span>
+                        </h4>
+                        <div class="result-item"><span class="label" data-lang="ar">1 جنيه</span><span class="label" data-lang="en" style="display:none">1 Pound</span><span class="value gold-value" id="gold-coin-1">-</span></div>
+                        <div class="result-item"><span class="label" data-lang="ar">1/2 جنيه</span><span class="label" data-lang="en" style="display:none">1/2 Pound</span><span class="value gold-value" id="gold-coin-1-2">-</span></div>
+                        <div class="result-item"><span class="label" data-lang="ar">1/4 جنيه</span><span class="label" data-lang="en" style="display:none">1/4 Pound</span><span class="value gold-value" id="gold-coin-1-4">-</span></div>
+                        <div class="result-item"><span class="label" data-lang="ar">5 جنيهات</span><span class="label" data-lang="en" style="display:none">5 Pounds</span><span class="value gold-value" id="gold-coin-5">-</span></div>
+                        <div class="code-block" id="gold-coins-code">
+                            <button class="copy-code-btn" onclick="copyCode('gold-coins-code')">⌨</button>
+                            <button class="download-code-btn" onclick="downloadCode('gold-coins-code')">🖼</button>
+                            <pre id="gold-coins-code-content">-</pre>
+                        </div>
+                    </div>
+                </div>
+                <div class="karat-grid" id="gold-local-karat-grid"></div>
+            </div>
+        </div>
+
+        <!-- Global Section -->
+        <div class="price-type-section" id="gold-global">
+            <div class="price-type-header global">
+                <h3>
+                    <span data-lang="ar">الأسعار العالمية</span>
+                    <span data-lang="en" style="display:none">Global Prices</span>
+                </h3>
+                <div class="action-buttons">
+                    <button class="action-btn copy-btn" onclick="copySection('gold-global')">⌨</button>
+                    <button class="action-btn download-btn" onclick="downloadSection('gold-global')">🖼</button>
+                </div>
+            </div>
+            <div class="price-type-content global">
+                <div class="results-grid">
+                    <div class="result-card gold">
+                        <h4>
+                            <span data-lang="ar">بالدولار</span>
+                            <span data-lang="en" style="display:none">USD Prices</span>
+                        </h4>
+                        <div class="result-item"><span class="label" data-lang="ar">أونصة</span><span class="label" data-lang="en" style="display:none">Ounce</span><span class="value gold-value" id="gold-global-ounce">-</span></div>
+                        <div class="result-item"><span class="label">24K (AU)</span><span class="value gold-value" id="gold-global-24">-</span></div>
+                        <div class="result-item"><span class="label">22K</span><span class="value gold-value" id="gold-global-22">-</span></div>
+                        <div class="result-item"><span class="label">21K</span><span class="value gold-value" id="gold-global-21">-</span></div>
+                        <div class="result-item"><span class="label">18K</span><span class="value gold-value" id="gold-global-18">-</span></div>
+                        <div class="result-item"><span class="label">14K</span><span class="value gold-value" id="gold-global-14">-</span></div>
+                        <div class="result-item"><span class="label">12K</span><span class="value gold-value" id="gold-global-12">-</span></div>
+                        <div class="result-item"><span class="label">9K</span><span class="value gold-value" id="gold-global-9">-</span></div>
+                        <div class="code-block" id="gold-global-code">
+                            <button class="copy-code-btn" onclick="copyCode('gold-global-code')">⌨</button>
+                            <button class="download-code-btn" onclick="downloadCode('gold-global-code')">🖼</button>
+                            <pre id="gold-global-code-content">-</pre>
+                        </div>
+                    </div>
+                    <div class="result-card gold">
+                        <h4>
+                            <span data-lang="ar">بالجنيه</span>
+                            <span data-lang="en" style="display:none">EGP Prices</span>
+                        </h4>
+                        <div class="result-item"><span class="label">24K</span><span class="value gold-value" id="gold-global-24-egp">-</span></div>
+                        <div class="result-item"><span class="label">22K</span><span class="value gold-value" id="gold-global-22-egp">-</span></div>
+                        <div class="result-item"><span class="label">21K</span><span class="value gold-value" id="gold-global-21-egp">-</span></div>
+                        <div class="result-item"><span class="label">18K</span><span class="value gold-value" id="gold-global-18-egp">-</span></div>
+                        <div class="result-item"><span class="label">14K</span><span class="value gold-value" id="gold-global-14-egp">-</span></div>
+                        <div class="result-item"><span class="label">12K</span><span class="value gold-value" id="gold-global-12-egp">-</span></div>
+                        <div class="result-item"><span class="label">9K</span><span class="value gold-value" id="gold-global-9-egp">-</span></div>
+                        <div class="code-block" id="gold-global-egp-code">
+                            <button class="copy-code-btn" onclick="copyCode('gold-global-egp-code')">⌨</button>
+                            <button class="download-code-btn" onclick="downloadCode('gold-global-egp-code')">🖼</button>
+                            <pre id="gold-global-egp-code-content">-</pre>
+                        </div>
+                    </div>
+                </div>
+                <div class="karat-grid" id="gold-global-karat-grid"></div>
+            </div>
+        </div>
+
+        <!-- Comparison Section (NEW) -->
+        <div class="price-type-section" id="gold-comparison">
+            <div class="price-type-header comparison">
+                <h3>
+                    <span data-lang="ar">المقارنة الشاملة (محلي × عالمي)</span>
+                    <span data-lang="en" style="display:none">Full Comparison (Local × Global)</span>
+                </h3>
+                <div class="action-buttons">
+                    <button class="action-btn copy-btn" onclick="copySection('gold-comparison')">⌨</button>
+                    <button class="action-btn download-btn" onclick="downloadSection('gold-comparison')">🖼</button>
+                </div>
+            </div>
+            <div class="price-type-content comparison">
+                <div class="karat-grid" id="gold-comparison-karat-grid"></div>
+                <div class="code-block" id="gold-comparison-code">
+                    <button class="copy-code-btn" onclick="copyCode('gold-comparison-code')">⌨</button>
+                    <button class="download-code-btn" onclick="downloadCode('gold-comparison-code')">🖼</button>
+                    <pre id="gold-comparison-code-content">-</pre>
+                </div>
+            </div>
+        </div>
+
+        <!-- Dollar Price & Gap Section -->
+        <div class="dollar-gap-section" id="gold-dollar-gap">
+            <h3>
+                <span data-lang="ar">دولار الصاغة والفجوة (GDP + LIG)</span>
+                <span data-lang="en" style="display:none">Goldsmiths Dollar & Gap (GDP + LIG)</span>
+                <div class="action-buttons">
+                    <button class="action-btn copy-btn" onclick="copySection('gold-dollar-gap')">⌨</button>
+                    <button class="action-btn download-btn" onclick="downloadSection('gold-dollar-gap')">🖼</button>
+                </div>
+            </h3>
+            <div class="dollar-gap-grid">
+                <div class="dollar-gap-card gold">
+                    <h4>
+                        <span data-lang="ar">دولار الصاغة (GDP)</span>
+                        <span data-lang="en" style="display:none">Goldsmiths Dollar (GDP)</span>
+                    </h4>
+                    <div class="dollar-gap-item"><span class="label">GDP</span><span class="value" id="gold-gdp">-</span></div>
+                    <div class="dollar-gap-item"><span class="label" data-lang="ar">المعادلة</span><span class="label" data-lang="en" style="display:none">Formula</span><span class="value" style="color: var(--text-muted); font-family: 'Courier New'; font-size: 0.8rem">(XAU × 31.103) ÷ AUW</span></div>
+                </div>
+                <div class="dollar-gap-card gold">
+                    <h4>
+                        <span data-lang="ar">الفجوة السعرية (LIG)</span>
+                        <span data-lang="en" style="display:none">Price Gap (LIG)</span>
+                    </h4>
+                    <div class="dollar-gap-item"><span class="label">GDP - Y</span><span class="value" id="gap-gold-value">-</span></div>
+                    <div class="dollar-gap-item"><span class="label">LIG%</span><span class="value" id="gap-gold-percent">-</span></div>
+                    <div class="dollar-gap-item"><span class="label" data-lang="ar">المعادلة</span><span class="label" data-lang="en" style="display:none">Formula</span><span class="value" style="color: var(--text-muted); font-family: 'Courier New'; font-size: 0.8rem">LIG = GDP - Y</span></div>
+                </div>
+            </div>
+            <div class="code-block" id="gold-dollar-gap-code">
+                <button class="copy-code-btn" onclick="copyCode('gold-dollar-gap-code')">⌨</button>
+                <button class="download-code-btn" onclick="downloadCode('gold-dollar-gap-code')">🖼</button>
+                <pre id="gold-dollar-gap-code-content">-</pre>
+            </div>
+        </div>
+
+        <!-- Premium Section -->
+        <div class="price-type-section" id="gold-premium">
+            <div class="price-type-header real">
+                <h3>
+                    <span data-lang="ar">المصنعية (Premium)</span>
+                    <span data-lang="en" style="display:none">Premium (Workmanship)</span>
+                </h3>
+                <div class="action-buttons">
+                    <button class="action-btn copy-btn" onclick="copySection('gold-premium')">⌨</button>
+                    <button class="action-btn download-btn" onclick="downloadSection('gold-premium')">🖼</button>
+                </div>
+            </div>
+            <div class="price-type-content real">
+                <div class="premium-grid">
+                    <div class="premium-card">
+                        <div class="premium-name" data-lang="ar">قيمة المصنعية (PO)</div>
+                        <div class="premium-name" data-lang="en" style="display:none">Premium Value (PO)</div>
+                        <div class="premium-formula">PO = (PP ÷ NG) - XAU</div>
+                        <div class="premium-calc" id="gold-premium-value">-</div>
+                    </div>
+                    <div class="premium-card">
+                        <div class="premium-name" data-lang="ar">نسبة المصنعية (PO%)</div>
+                        <div class="premium-name" data-lang="en" style="display:none">Premium Percentage (PO%)</div>
+                        <div class="premium-formula">PO% = (PO ÷ XAU) × 100</div>
+                        <div class="premium-calc" id="gold-premium-percent">-</div>
+                    </div>
+                    <div class="premium-card">
+                        <div class="premium-name" data-lang="ar">سعر الجرام (PPGG)</div>
+                        <div class="premium-name" data-lang="en" style="display:none">Price Per Gram (PPGG)</div>
+                        <div class="premium-formula">PPGG = (E24 × EXG) ÷ 24</div>
+                        <div class="premium-calc" id="gold-ppgg">-</div>
+                    </div>
+                </div>
+                <div class="code-block" id="gold-premium-code">
+                    <button class="copy-code-btn" onclick="copyCode('gold-premium-code')">⌨</button>
+                    <button class="download-code-btn" onclick="downloadCode('gold-premium-code')">🖼</button>
+                    <pre id="gold-premium-code-content">-</pre>
+                </div>
+            </div>
+        </div>
+
+        <!-- Gold Formulas -->
+        <div class="formula-section">
+            <h3>
+                <span data-lang="ar">معادلات الذهب</span>
+                <span data-lang="en" style="display:none">Gold Formulas</span>
+                <div class="action-buttons">
+                    <button class="action-btn copy-btn" onclick="copySection('gold-formulas')">⌨</button>
+                    <button class="action-btn download-btn" onclick="downloadSection('gold-formulas')">🖼</button>
+                </div>
+            </h3>
+            <div class="formula-grid" id="gold-formulas">
+                <div class="formula-card">
+                    <div class="formula-name">AU = AUW ÷ 31.103</div>
+                    <div class="formula-text" data-lang="ar">سعر جرام الذهب العالمي</div>
+                    <div class="formula-text" data-lang="en" style="display:none">Global Gold Gram Price</div>
+                    <div class="formula-calc" id="formula-au">-</div>
+                </div>
+                <div class="formula-card">
+                    <div class="formula-name">E24 = 1 × AU</div>
+                    <div class="formula-text" data-lang="ar">عيار 24</div>
+                    <div class="formula-text" data-lang="en" style="display:none">24K Karat</div>
+                    <div class="formula-calc" id="formula-e24">-</div>
+                </div>
+                <div class="formula-card">
+                    <div class="formula-name">E22GP = (22/24) × AU</div>
+                    <div class="formula-text" data-lang="ar">عيار 22</div>
+                    <div class="formula-text" data-lang="en" style="display:none">22K Karat</div>
+                    <div class="formula-calc" id="formula-e22">-</div>
+                </div>
+                <div class="formula-card">
+                    <div class="formula-name">E21GP = (21/24) × AU</div>
+                    <div class="formula-text" data-lang="ar">عيار 21</div>
+                    <div class="formula-text" data-lang="en" style="display:none">21K Karat</div>
+                    <div class="formula-calc" id="formula-e21">-</div>
+                </div>
+                <div class="formula-card">
+                    <div class="formula-name">E18GP = (18/24) × AU</div>
+                    <div class="formula-text" data-lang="ar">عيار 18</div>
+                    <div class="formula-text" data-lang="en" style="display:none">18K Karat</div>
+                    <div class="formula-calc" id="formula-e18">-</div>
+                </div>
+                <div class="formula-card">
+                    <div class="formula-name">E14GP = (14/24) × AU</div>
+                    <div class="formula-text" data-lang="ar">عيار 14</div>
+                    <div class="formula-text" data-lang="en" style="display:none">14K Karat</div>
+                    <div class="formula-calc" id="formula-e14">-</div>
+                </div>
+                <div class="formula-card">
+                    <div class="formula-name">E12GP = (12/24) × AU</div>
+                    <div class="formula-text" data-lang="ar">عيار 12</div>
+                    <div class="formula-text" data-lang="en" style="display:none">12K Karat</div>
+                    <div class="formula-calc" id="formula-e12">-</div>
+                </div>
+                <div class="formula-card">
+                    <div class="formula-name">E9GP = (9/24) × AU</div>
+                    <div class="formula-text" data-lang="ar">عيار 9</div>
+                    <div class="formula-text" data-lang="en" style="display:none">9K Karat</div>
+                    <div class="formula-calc" id="formula-e9">-</div>
+                </div>
+                <div class="formula-card">
+                    <div class="formula-name">EXGGP = (EXG/24) × AU</div>
+                    <div class="formula-text" data-lang="ar">عيار خاص</div>
+                    <div class="formula-text" data-lang="en" style="display:none">Custom Karat</div>
+                    <div class="formula-calc" id="formula-exg">-</div>
+                </div>
+                <div class="formula-card">
+                    <div class="formula-name">GDP = (XAU × 31.103) ÷ AUW</div>
+                    <div class="formula-text" data-lang="ar">دولار الصاغة</div>
+                    <div class="formula-text" data-lang="en" style="display:none">Goldsmiths Dollar</div>
+                    <div class="formula-calc" id="formula-gdp">-</div>
+                </div>
+                <div class="formula-card">
+                    <div class="formula-name">LIG = GDP - Y</div>
+                    <div class="formula-text" data-lang="ar">الفجوة السعرية</div>
+                    <div class="formula-text" data-lang="en" style="display:none">Price Gap</div>
+                    <div class="formula-calc" id="formula-lig">-</div>
+                </div>
+                <div class="formula-card">
+                    <div class="formula-name">PPGG = (E24 × EXG) ÷ 24</div>
+                    <div class="formula-text" data-lang="ar">سعر الجرام</div>
+                    <div class="formula-text" data-lang="en" style="display:none">Price Per Gram</div>
+                    <div class="formula-calc" id="formula-ppgg">-</div>
+                </div>
+                <div class="formula-card">
+                    <div class="formula-name">1EGPG = E21 × 8</div>
+                    <div class="formula-text" data-lang="ar">جنيه ذهب واحد</div>
+                    <div class="formula-text" data-lang="en" style="display:none">1 Gold Pound</div>
+                    <div class="formula-calc" id="formula-1egpg">-</div>
+                </div>
+                <div class="formula-card">
+                    <div class="formula-name">1/2EGPG = E21 × 4</div>
+                    <div class="formula-text" data-lang="ar">نصف جنيه</div>
+                    <div class="formula-text" data-lang="en" style="display:none">1/2 Gold Pound</div>
+                    <div class="formula-calc" id="formula-1-2egpg">-</div>
+                </div>
+                <div class="formula-card">
+                    <div class="formula-name">1/4EGPG = E21 × 2</div>
+                    <div class="formula-text" data-lang="ar">ربع جنيه</div>
+                    <div class="formula-text" data-lang="en" style="display:none">1/4 Gold Pound</div>
+                    <div class="formula-calc" id="formula-1-4egpg">-</div>
+                </div>
+                <div class="formula-card">
+                    <div class="formula-name">5EGPG = E21 × 40</div>
+                    <div class="formula-text" data-lang="ar">5 جنيهات</div>
+                    <div class="formula-text" data-lang="en" style="display:none">5 Gold Pounds</div>
+                    <div class="formula-calc" id="formula-5egpg">-</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SILVER SECTION -->
+    <div class="metal-section silver-metal">
+        <h2 class="metal-title">
+            <span data-lang="ar">الفضة - Silver</span>
+            <span data-lang="en" style="display:none">Silver - الفضة</span>
+        </h2>
+
+        <!-- Local Section -->
+        <div class="price-type-section" id="silver-local">
+            <div class="price-type-header local">
+                <h3>
+                    <span data-lang="ar">الأسعار المحلية</span>
+                    <span data-lang="en" style="display:none">Local Prices</span>
+                </h3>
+                <div class="action-buttons">
+                    <button class="action-btn copy-btn" onclick="copySection('silver-local')">⌨</button>
+                    <button class="action-btn download-btn" onclick="downloadSection('silver-local')">🖼</button>
+                </div>
+            </div>
+            <div class="price-type-content local">
+                <div class="results-grid">
+                    <div class="result-card silver">
+                        <h4>
+                            <span data-lang="ar">عيارات الفضة</span>
+                            <span data-lang="en" style="display:none">Silver Purity</span>
+                        </h4>
+                        <div class="result-item"><span class="label">999</span><span class="value silver-value" id="silver-local-999">-</span></div>
+                        <div class="result-item"><span class="label">925</span><span class="value silver-value" id="silver-local-925">-</span></div>
+                        <div class="result-item"><span class="label">900</span><span class="value silver-value" id="silver-local-900">-</span></div>
+                        <div class="result-item"><span class="label">825</span><span class="value silver-value" id="silver-local-825">-</span></div>
+                        <div class="result-item"><span class="label">800</span><span class="value silver-value" id="silver-local-800">-</span></div>
+                        <div class="result-item"><span class="label">600</span><span class="value silver-value" id="silver-local-600">-</span></div>
+                        <div class="result-item"><span class="label" data-lang="ar">عيار خاص</span><span class="label" data-lang="en" style="display:none">Custom</span><span class="value silver-value" id="silver-local-exs">-</span></div>
+                        <div class="code-block" id="silver-local-code">
+                            <button class="copy-code-btn" onclick="copyCode('silver-local-code')">⌨</button>
+                            <button class="download-code-btn" onclick="downloadCode('silver-local-code')">🖼</button>
+                            <pre id="silver-local-code-content">-</pre>
+                        </div>
+                    </div>
+                </div>
+                <div class="karat-grid" id="silver-local-karat-grid"></div>
+            </div>
+        </div>
+
+        <!-- Global Section -->
+        <div class="price-type-section" id="silver-global">
+            <div class="price-type-header global">
+                <h3>
+                    <span data-lang="ar">الأسعار العالمية</span>
+                    <span data-lang="en" style="display:none">Global Prices</span>
+                </h3>
+                <div class="action-buttons">
+                    <button class="action-btn copy-btn" onclick="copySection('silver-global')">⌨</button>
+                    <button class="action-btn download-btn" onclick="downloadSection('silver-global')">🖼</button>
+                </div>
+            </div>
+            <div class="price-type-content global">
+                <div class="results-grid">
+                    <div class="result-card silver">
+                        <h4>
+                            <span data-lang="ar">بالدولار</span>
+                            <span data-lang="en" style="display:none">USD Prices</span>
+                        </h4>
+                        <div class="result-item"><span class="label" data-lang="ar">أونصة</span><span class="label" data-lang="en" style="display:none">Ounce</span><span class="value silver-value" id="silver-global-ounce">-</span></div>
+                        <div class="result-item"><span class="label">999 (AG)</span><span class="value silver-value" id="silver-global-999">-</span></div>
+                        <div class="result-item"><span class="label">925</span><span class="value silver-value" id="silver-global-925">-</span></div>
+                        <div class="result-item"><span class="label">900</span><span class="value silver-value" id="silver-global-900">-</span></div>
+                        <div class="result-item"><span class="label">825</span><span class="value silver-value" id="silver-global-825">-</span></div>
+                        <div class="result-item"><span class="label">800</span><span class="value silver-value" id="silver-global-800">-</span></div>
+                        <div class="result-item"><span class="label">600</span><span class="value silver-value" id="silver-global-600">-</span></div>
+                        <div class="code-block" id="silver-global-code">
+                            <button class="copy-code-btn" onclick="copyCode('silver-global-code')">⌨</button>
+                            <button class="download-code-btn" onclick="downloadCode('silver-global-code')">🖼</button>
+                            <pre id="silver-global-code-content">-</pre>
+                        </div>
+                    </div>
+                    <div class="result-card silver">
+                        <h4>
+                            <span data-lang="ar">بالجنيه</span>
+                            <span data-lang="en" style="display:none">EGP Prices</span>
+                        </h4>
+                        <div class="result-item"><span class="label">999</span><span class="value silver-value" id="silver-global-999-egp">-</span></div>
+                        <div class="result-item"><span class="label">925</span><span class="value silver-value" id="silver-global-925-egp">-</span></div>
+                        <div class="result-item"><span class="label">900</span><span class="value silver-value" id="silver-global-900-egp">-</span></div>
+                        <div class="result-item"><span class="label">825</span><span class="value silver-value" id="silver-global-825-egp">-</span></div>
+                        <div class="result-item"><span class="label">800</span><span class="value silver-value" id="silver-global-800-egp">-</span></div>
+                        <div class="result-item"><span class="label">600</span><span class="value silver-value" id="silver-global-600-egp">-</span></div>
+                        <div class="code-block" id="silver-global-egp-code">
+                            <button class="copy-code-btn" onclick="copyCode('silver-global-egp-code')">⌨</button>
+                            <button class="download-code-btn" onclick="downloadCode('silver-global-egp-code')">🖼</button>
+                            <pre id="silver-global-egp-code-content">-</pre>
+                        </div>
+                    </div>
+                </div>
+                <div class="karat-grid" id="silver-global-karat-grid"></div>
+            </div>
+        </div>
+
+        <!-- Comparison Section (NEW) -->
+        <div class="price-type-section" id="silver-comparison">
+            <div class="price-type-header comparison">
+                <h3>
+                    <span data-lang="ar">المقارنة الشاملة (محلي × عالمي)</span>
+                    <span data-lang="en" style="display:none">Full Comparison (Local × Global)</span>
+                </h3>
+                <div class="action-buttons">
+                    <button class="action-btn copy-btn" onclick="copySection('silver-comparison')">⌨</button>
+                    <button class="action-btn download-btn" onclick="downloadSection('silver-comparison')">🖼</button>
+                </div>
+            </div>
+            <div class="price-type-content comparison">
+                <div class="karat-grid" id="silver-comparison-karat-grid"></div>
+                <div class="code-block" id="silver-comparison-code">
+                    <button class="copy-code-btn" onclick="copyCode('silver-comparison-code')">⌨</button>
+                    <button class="download-code-btn" onclick="downloadCode('silver-comparison-code')">🖼</button>
+                    <pre id="silver-comparison-code-content">-</pre>
+                </div>
+            </div>
+        </div>
+
+        <!-- Dollar Price & Gap Section -->
+        <div class="dollar-gap-section" id="silver-dollar-gap">
+            <h3>
+                <span data-lang="ar">دولار الصاغة والفجوة (SDP + LIG)</span>
+                <span data-lang="en" style="display:none">Goldsmiths Dollar & Gap (SDP + LIG)</span>
+                <div class="action-buttons">
+                    <button class="action-btn copy-btn" onclick="copySection('silver-dollar-gap')">⌨</button>
+                    <button class="action-btn download-btn" onclick="downloadSection('silver-dollar-gap')">🖼</button>
+                </div>
+            </h3>
+            <div class="dollar-gap-grid">
+                <div class="dollar-gap-card silver">
+                    <h4>
+                        <span data-lang="ar">دولار الصاغة (SDP)</span>
+                        <span data-lang="en" style="display:none">Goldsmiths Dollar (SDP)</span>
+                    </h4>
+                    <div class="dollar-gap-item"><span class="label">SDP</span><span class="value" id="silver-sdp">-</span></div>
+                    <div class="dollar-gap-item"><span class="label" data-lang="ar">المعادلة</span><span class="label" data-lang="en" style="display:none">Formula</span><span class="value" style="color: var(--text-muted); font-family: 'Courier New'; font-size: 0.8rem">(XAG × 31.103) ÷ AGW</span></div>
+                </div>
+                <div class="dollar-gap-card silver">
+                    <h4>
+                        <span data-lang="ar">الفجوة السعرية (LIG)</span>
+                        <span data-lang="en" style="display:none">Price Gap (LIG)</span>
+                    </h4>
+                    <div class="dollar-gap-item"><span class="label">SDP - Y</span><span class="value" id="gap-silver-value">-</span></div>
+                    <div class="dollar-gap-item"><span class="label">LIG%</span><span class="value" id="gap-silver-percent">-</span></div>
+                    <div class="dollar-gap-item"><span class="label" data-lang="ar">المعادلة</span><span class="label" data-lang="en" style="display:none">Formula</span><span class="value" style="color: var(--text-muted); font-family: 'Courier New'; font-size: 0.8rem">LIG = SDP - Y</span></div>
+                </div>
+            </div>
+            <div class="code-block" id="silver-dollar-gap-code">
+                <button class="copy-code-btn" onclick="copyCode('silver-dollar-gap-code')">⌨</button>
+                <button class="download-code-btn" onclick="downloadCode('silver-dollar-gap-code')">🖼</button>
+                <pre id="silver-dollar-gap-code-content">-</pre>
+            </div>
+        </div>
+
+        <!-- Premium Section -->
+        <div class="price-type-section" id="silver-premium">
+            <div class="price-type-header real">
+                <h3>
+                    <span data-lang="ar">المصنعية (Premium)</span>
+                    <span data-lang="en" style="display:none">Premium (Workmanship)</span>
+                </h3>
+                <div class="action-buttons">
+                    <button class="action-btn copy-btn" onclick="copySection('silver-premium')">⌨</button>
+                    <button class="action-btn download-btn" onclick="downloadSection('silver-premium')">🖼</button>
+                </div>
+            </div>
+            <div class="price-type-content real">
+                <div class="premium-grid">
+                    <div class="premium-card">
+                        <div class="premium-name" data-lang="ar">قيمة المصنعية (PO)</div>
+                        <div class="premium-name" data-lang="en" style="display:none">Premium Value (PO)</div>
+                        <div class="premium-formula">PO = (PP ÷ NG) - XAG</div>
+                        <div class="premium-calc" id="silver-premium-value">-</div>
+                    </div>
+                    <div class="premium-card">
+                        <div class="premium-name" data-lang="ar">نسبة المصنعية (PO%)</div>
+                        <div class="premium-name" data-lang="en" style="display:none">Premium Percentage (PO%)</div>
+                        <div class="premium-formula">PO% = (PO ÷ XAG) × 100</div>
+                        <div class="premium-calc" id="silver-premium-percent">-</div>
+                    </div>
+                    <div class="premium-card">
+                        <div class="premium-name" data-lang="ar">سعر الجرام (PPGS)</div>
+                        <div class="premium-name" data-lang="en" style="display:none">Price Per Gram (PPGS)</div>
+                        <div class="premium-formula">PPGS = (E999 × EXS) ÷ 1000</div>
+                        <div class="premium-calc" id="silver-ppgs">-</div>
+                    </div>
+                </div>
+                <div class="code-block" id="silver-premium-code">
+                    <button class="copy-code-btn" onclick="copyCode('silver-premium-code')">⌨</button>
+                    <button class="download-code-btn" onclick="downloadCode('silver-premium-code')">🖼</button>
+                    <pre id="silver-premium-code-content">-</pre>
+                </div>
+            </div>
+        </div>
+
+        <!-- Silver Formulas -->
+        <div class="formula-section">
+            <h3>
+                <span data-lang="ar">معادلات الفضة</span>
+                <span data-lang="en" style="display:none">Silver Formulas</span>
+                <div class="action-buttons">
+                    <button class="action-btn copy-btn" onclick="copySection('silver-formulas')">⌨</button>
+                    <button class="action-btn download-btn" onclick="downloadSection('silver-formulas')">🖼</button>
+                </div>
+            </h3>
+            <div class="formula-grid" id="silver-formulas">
+                <div class="formula-card">
+                    <div class="formula-name">AG = AGW ÷ 31.103</div>
+                    <div class="formula-text" data-lang="ar">سعر جرام الفضة العالمي</div>
+                    <div class="formula-text" data-lang="en" style="display:none">Global Silver Gram Price</div>
+                    <div class="formula-calc" id="formula-ag">-</div>
+                </div>
+                <div class="formula-card">
+                    <div class="formula-name">E999 = 1 × AG</div>
+                    <div class="formula-text" data-lang="ar">عيار 999</div>
+                    <div class="formula-text" data-lang="en" style="display:none">999 Purity</div>
+                    <div class="formula-calc" id="formula-e999">-</div>
+                </div>
+                <div class="formula-card">
+                    <div class="formula-name">E925SP = (925/1000) × AG</div>
+                    <div class="formula-text" data-lang="ar">عيار 925</div>
+                    <div class="formula-text" data-lang="en" style="display:none">925 Purity</div>
+                    <div class="formula-calc" id="formula-e925">-</div>
+                </div>
+                <div class="formula-card">
+                    <div class="formula-name">E900SP = (900/1000) × AG</div>
+                    <div class="formula-text" data-lang="ar">عيار 900</div>
+                    <div class="formula-text" data-lang="en" style="display:none">900 Purity</div>
+                    <div class="formula-calc" id="formula-e900">-</div>
+                </div>
+                <div class="formula-card">
+                    <div class="formula-name">E825SP = (825/1000) × AG</div>
+                    <div class="formula-text" data-lang="ar">عيار 825</div>
+                    <div class="formula-text" data-lang="en" style="display:none">825 Purity</div>
+                    <div class="formula-calc" id="formula-e825">-</div>
+                </div>
+                <div class="formula-card">
+                    <div class="formula-name">E800SP = (800/1000) × AG</div>
+                    <div class="formula-text" data-lang="ar">عيار 800</div>
+                    <div class="formula-text" data-lang="en" style="display:none">800 Purity</div>
+                    <div class="formula-calc" id="formula-e800">-</div>
+                </div>
+                <div class="formula-card">
+                    <div class="formula-name">E600SP = (600/1000) × AG</div>
+                    <div class="formula-text" data-lang="ar">عيار 600</div>
+                    <div class="formula-text" data-lang="en" style="display:none">600 Purity</div>
+                    <div class="formula-calc" id="formula-e600">-</div>
+                </div>
+                <div class="formula-card">
+                    <div class="formula-name">EXGSP = (EXS/1000) × AG</div>
+                    <div class="formula-text" data-lang="ar">عيار خاص</div>
+                    <div class="formula-text" data-lang="en" style="display:none">Custom Purity</div>
+                    <div class="formula-calc" id="formula-exs">-</div>
+                </div>
+                <div class="formula-card">
+                    <div class="formula-name">SDP = (XAG × 31.103) ÷ AGW</div>
+                    <div class="formula-text" data-lang="ar">دولار الصاغة</div>
+                    <div class="formula-text" data-lang="en" style="display:none">Goldsmiths Dollar</div>
+                    <div class="formula-calc" id="formula-sdp">-</div>
+                </div>
+                <div class="formula-card">
+                    <div class="formula-name">LIG = SDP - Y</div>
+                    <div class="formula-text" data-lang="ar">الفجوة السعرية</div>
+                    <div class="formula-text" data-lang="en" style="display:none">Price Gap</div>
+                    <div class="formula-calc" id="formula-lig-silver">-</div>
+                </div>
+                <div class="formula-card">
+                    <div class="formula-name">PPGS = (E999 × EXS) ÷ 1000</div>
+                    <div class="formula-text" data-lang="ar">سعر الجرام</div>
+                    <div class="formula-text" data-lang="en" style="display:none">Price Per Gram</div>
+                    <div class="formula-calc" id="formula-ppgs">-</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- COMBINED FORMULAS SECTION -->
+    <div class="combined-section">
+        <h3>
+            <span data-lang="ar">جميع المعادلات مجمعة</span>
+            <span data-lang="en" style="display:none">All Combined Formulas</span>
+            <div class="action-buttons">
+                <button class="action-btn copy-btn" onclick="copySection('combined-formulas')">⌨</button>
+                <button class="action-btn download-btn" onclick="downloadSection('combined-formulas')">🖼</button>
+            </div>
+        </h3>
+        <div class="combined-grid" id="combined-formulas">
+            <div class="combined-card gold">
+                <h4>
+                    <span data-lang="ar">معادلات الذهب</span>
+                    <span data-lang="en" style="display:none">Gold Formulas</span>
+                </h4>
+                <div id="combined-gold-formulas"></div>
+            </div>
+            <div class="combined-card silver">
+                <h4>
+                    <span data-lang="ar">معادلات الفضة</span>
+                    <span data-lang="en" style="display:none">Silver Formulas</span>
+                </h4>
+                <div id="combined-silver-formulas"></div>
+            </div>
+        </div>
+        <div class="code-block" id="combined-code">
+            <button class="copy-code-btn" onclick="copyCode('combined-code')">⌨</button>
+            <button class="download-code-btn" onclick="downloadCode('combined-code')">🖼</button>
+            <pre id="combined-code-content">-</pre>
+        </div>
+    </div>
+</div>
+
+<script>
+let currentLang = 'ar';
+const OUNCE_TO_GRAM = 31.103;
+
+const inputs = {
+    y: document.getElementById('y'),
+    auw: document.getElementById('auw'),
+    agw: document.getElementById('agw'),
+    xau: document.getElementById('xau'),
+    xag: document.getElementById('xag'),
+    ng: document.getElementById('ng'),
+    pp: document.getElementById('pp'),
+    exg: document.getElementById('exg'),
+    exs: document.getElementById('exs')
+};
+
+function formatCurrency(value, currency = 'ج.م') {
+    if (isNaN(value) || value === null || value === undefined) return '-';
+    return value.toFixed(2) + ' ' + currency;
+}
+
+function formatNumber(value) {
+    if (isNaN(value) || value === null || value === undefined) return '-';
+    return value.toFixed(2);
+}
+
+function setLanguage(lang) {
+    currentLang = lang;
+    document.documentElement.lang = lang;
+    document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
+    document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.remove('active'));
+    event.target.classList.add('active');
+    document.querySelectorAll('[data-lang]').forEach(el => {
+        if (el.getAttribute('data-lang') === lang) {
+            el.style.display = (el.tagName === 'SPAN' && el.classList.contains('en')) ? 'inline' : 'block';
+        } else {
+            el.style.display = 'none';
+        }
+    });
+    calculate();
+}
+
+function createGoldKaratCard(karat, localEgp, globalEgp, localUsd, globalUsd) {
+    return `
+        <div class="karat-card">
+            <div class="karat-card-header">
+                <div class="karat">${karat}K</div>
+            </div>
+            <div class="karat-card-body">
+                <div class="karat-section local-egp">
+                    <div class="section-label" data-lang="ar">محلي ج.م</div>
+                    <div class="section-label" data-lang="en" style="display:none">Local EGP</div>
+                    <div class="section-value">${formatCurrency(localEgp)}</div>
+                </div>
+                <div class="karat-section global-egp">
+                    <div class="section-label" data-lang="ar">عالمي ج.م</div>
+                    <div class="section-label" data-lang="en" style="display:none">Global EGP</div>
+                    <div class="section-value">${formatCurrency(globalEgp)}</div>
+                </div>
+                <div class="karat-section local-usd">
+                    <div class="section-label" data-lang="ar">محلي $</div>
+                    <div class="section-label" data-lang="en" style="display:none">Local USD</div>
+                    <div class="section-value">${formatCurrency(localUsd, '$')}</div>
+                </div>
+                <div class="karat-section global-usd">
+                    <div class="section-label" data-lang="ar">عالمي $</div>
+                    <div class="section-label" data-lang="en" style="display:none">Global USD</div>
+                    <div class="section-value">${formatCurrency(globalUsd, '$')}</div>
+                </div>
+            </div>
+        </div>
+    `;
+}
+
+function createSilverKaratCard(purity, localEgp, globalEgp, localUsd, globalUsd) {
+    return `
+        <div class="silver-karat-card">
+            <div class="silver-karat-card-header">
+                <div class="purity">${purity}</div>
+            </div>
+            <div class="silver-karat-card-body">
+                <div class="silver-karat-section local-egp">
+                    <div class="section-label" data-lang="ar">محلي ج.م</div>
+                    <div class="section-label" data-lang="en" style="display:none">Local EGP</div>
+                    <div class="section-value">${formatCurrency(localEgp)}</div>
+                </div>
+                <div class="silver-karat-section global-egp">
+                    <div class="section-label" data-lang="ar">عالمي ج.م</div>
+                    <div class="section-label" data-lang="en" style="display:none">Global EGP</div>
+                    <div class="section-value">${formatCurrency(globalEgp)}</div>
+                </div>
+                <div class="silver-karat-section local-usd">
+                    <div class="section-label" data-lang="ar">محلي $</div>
+                    <div class="section-label" data-lang="en" style="display:none">Local USD</div>
+                    <div class="section-value">${formatCurrency(localUsd, '$')}</div>
+                </div>
+                <div class="silver-karat-section global-usd">
+                    <div class="section-label" data-lang="ar">عالمي $</div>
+                    <div class="section-label" data-lang="en" style="display:none">Global USD</div>
+                    <div class="section-value">${formatCurrency(globalUsd, '$')}</div>
+                </div>
+            </div>
+        </div>
+    `;
+}
+
+function calculateGold() {
+    const y = parseFloat(inputs.y.value) || 0;
+    const auw = parseFloat(inputs.auw.value) || 0;
+    const xau = parseFloat(inputs.xau.value) || 0;
+    const ng = parseFloat(inputs.ng.value) || 0;
+    const pp = parseFloat(inputs.pp.value) || 0;
+    const exg = parseFloat(inputs.exg.value) || 24;
+
+    if (y === 0 || auw === 0 || xau === 0) {
+        clearGoldDisplay();
+        return;
+    }
+
+    const au = auw / OUNCE_TO_GRAM;
+    const au_egp = au * y;
+    const localUsdRate = xau / y;
+
+    // Local prices
+    const local_24 = xau;
+    const local_22 = (22 / 24) * xau;
+    const local_21 = (21 / 24) * xau;
+    const local_18 = (18 / 24) * xau;
+    const local_14 = (14 / 24) * xau;
+    const local_12 = (12 / 24) * xau;
+    const local_9 = (9 / 24) * xau;
+    const local_exg = (exg / 24) * xau;
+
+    // Global prices USD
+    const global_24 = au;
+    const global_22 = (22 / 24) * au;
+    const global_21 = (21 / 24) * au;
+    const global_18 = (18 / 24) * au;
+    const global_14 = (14 / 24) * au;
+    const global_12 = (12 / 24) * au;
+    const global_9 = (9 / 24) * au;
+
+    // Global prices EGP
+    const global_24_egp = au_egp;
+    const global_22_egp = (22 / 24) * au_egp;
+    const global_21_egp = (21 / 24) * au_egp;
+    const global_18_egp = (18 / 24) * au_egp;
+    const global_14_egp = (14 / 24) * au_egp;
+    const global_12_egp = (12 / 24) * au_egp;
+    const global_9_egp = (9 / 24) * au_egp;
+
+    // GDP
+    const gdp = (xau * OUNCE_TO_GRAM) / auw;
+
+    // Coins
+    const coin_1 = local_21 * 8;
+    const coin_1_2 = local_21 * 4;
+    const coin_1_4 = local_21 * 2;
+    const coin_5 = local_21 * 40;
+
+    // Gap
+    const gap_gold = gdp - y;
+    const gap_gold_percent = y > 0 ? (gap_gold / y) * 100 : 0;
+
+    // Premium
+    const premium_value = ng > 0 ? (pp / ng) - xau : 0;
+    const premium_percent = xau > 0 ? (premium_value / xau) * 100 : 0;
+    const ppgg = (global_24_egp * exg) / 24;
+
+    // Update Local
+    document.getElementById('gold-local-24').textContent = formatCurrency(local_24);
+    document.getElementById('gold-local-22').textContent = formatCurrency(local_22);
+    document.getElementById('gold-local-21').textContent = formatCurrency(local_21);
+    document.getElementById('gold-local-18').textContent = formatCurrency(local_18);
+    document.getElementById('gold-local-14').textContent = formatCurrency(local_14);
+    document.getElementById('gold-local-12').textContent = formatCurrency(local_12);
+    document.getElementById('gold-local-9').textContent = formatCurrency(local_9);
+    document.getElementById('gold-local-exg').textContent = formatCurrency(local_exg);
+
+    // Coins
+    document.getElementById('gold-coin-1').textContent = formatCurrency(coin_1);
+    document.getElementById('gold-coin-1-2').textContent = formatCurrency(coin_1_2);
+    document.getElementById('gold-coin-1-4').textContent = formatCurrency(coin_1_4);
+    document.getElementById('gold-coin-5').textContent = formatCurrency(coin_5);
+
+    // Global USD
+    document.getElementById('gold-global-ounce').textContent = formatCurrency(auw, '$');
+    document.getElementById('gold-global-24').textContent = formatCurrency(global_24, '$');
+    document.getElementById('gold-global-22').textContent = formatCurrency(global_22, '$');
+    document.getElementById('gold-global-21').textContent = formatCurrency(global_21, '$');
+    document.getElementById('gold-global-18').textContent = formatCurrency(global_18, '$');
+    document.getElementById('gold-global-14').textContent = formatCurrency(global_14, '$');
+    document.getElementById('gold-global-12').textContent = formatCurrency(global_12, '$');
+    document.getElementById('gold-global-9').textContent = formatCurrency(global_9, '$');
+
+    // Global EGP
+    document.getElementById('gold-global-24-egp').textContent = formatCurrency(global_24_egp);
+    document.getElementById('gold-global-22-egp').textContent = formatCurrency(global_22_egp);
+    document.getElementById('gold-global-21-egp').textContent = formatCurrency(global_21_egp);
+    document.getElementById('gold-global-18-egp').textContent = formatCurrency(global_18_egp);
+    document.getElementById('gold-global-14-egp').textContent = formatCurrency(global_14_egp);
+    document.getElementById('gold-global-12-egp').textContent = formatCurrency(global_12_egp);
+    document.getElementById('gold-global-9-egp').textContent = formatCurrency(global_9_egp);
+
+    // Real
+    document.getElementById('gold-gdp').textContent = formatCurrency(gdp, '$');
+
+    // Gap
+    document.getElementById('gap-gold-value').textContent = formatCurrency(gap_gold, '$');
+    document.getElementById('gap-gold-percent').textContent = formatNumber(gap_gold_percent) + '%';
+
+    // Premium
+    document.getElementById('gold-premium-value').textContent = formatCurrency(premium_value);
+    document.getElementById('gold-premium-percent').textContent = formatNumber(premium_percent) + '%';
+    document.getElementById('gold-ppgg').textContent = formatCurrency(ppgg);
+
+    // Formulas
+    document.getElementById('formula-au').textContent = formatCurrency(au, '$');
+    document.getElementById('formula-e24').textContent = formatCurrency(global_24, '$');
+    document.getElementById('formula-e22').textContent = formatCurrency(global_22, '$');
+    document.getElementById('formula-e21').textContent = formatCurrency(global_21, '$');
+    document.getElementById('formula-e18').textContent = formatCurrency(global_18, '$');
+    document.getElementById('formula-e14').textContent = formatCurrency(global_14, '$');
+    document.getElementById('formula-e12').textContent = formatCurrency(global_12, '$');
+    document.getElementById('formula-e9').textContent = formatCurrency(global_9, '$');
+    document.getElementById('formula-exg').textContent = formatCurrency((exg / 24) * au, '$');
+    document.getElementById('formula-gdp').textContent = formatCurrency(gdp, '$');
+    document.getElementById('formula-lig').textContent = formatCurrency(gap_gold, '$');
+    document.getElementById('formula-ppgg').textContent = formatCurrency(ppgg);
+    document.getElementById('formula-1egpg').textContent = formatCurrency(coin_1);
+    document.getElementById('formula-1-2egpg').textContent = formatCurrency(coin_1_2);
+    document.getElementById('formula-1-4egpg').textContent = formatCurrency(coin_1_4);
+    document.getElementById('formula-5egpg').textContent = formatCurrency(coin_5);
+
+    // Generate Karat Grids
+    const goldKarats = [24, 22, 21, 18, 14, 12, 9];
+    let localKaratHtml = '';
+    let globalKaratHtml = '';
+    let comparisonKaratHtml = '';
+
+    goldKarats.forEach(k => {
+        const localPrice = (k / 24) * xau;
+        const globalPriceEgp = (k / 24) * au_egp;
+        const globalPriceUsd = (k / 24) * au;
+        const localPriceUsd = localPrice / y;
+
+        localKaratHtml += createGoldKaratCard(k, localPrice, globalPriceEgp, localPriceUsd, globalPriceUsd);
+        globalKaratHtml += createGoldKaratCard(k, localPrice, globalPriceEgp, localPriceUsd, globalPriceUsd);
+        comparisonKaratHtml += createGoldKaratCard(k, localPrice, globalPriceEgp, localPriceUsd, globalPriceUsd);
+    });
+
+    // Add custom karat
+    const customLocalPrice = (exg / 24) * xau;
+    const customGlobalPriceEgp = (exg / 24) * au_egp;
+    const customGlobalPriceUsd = (exg / 24) * au;
+    const customLocalPriceUsd = customLocalPrice / y;
+    comparisonKaratHtml += createGoldKaratCard(exg, customLocalPrice, customGlobalPriceEgp, customLocalPriceUsd, customGlobalPriceUsd);
+
+    document.getElementById('gold-local-karat-grid').innerHTML = localKaratHtml;
+    document.getElementById('gold-global-karat-grid').innerHTML = globalKaratHtml;
+    document.getElementById('gold-comparison-karat-grid').innerHTML = comparisonKaratHtml;
+
+    updateGoldCodes(au, auw, xau, y, gdp, gap_gold, gap_gold_percent, local_21, premium_value, premium_percent, ppgg, exg, localUsdRate);
+}
+
+function calculateSilver() {
+    const y = parseFloat(inputs.y.value) || 0;
+    const agw = parseFloat(inputs.agw.value) || 0;
+    const xag = parseFloat(inputs.xag.value) || 0;
+    const ng = parseFloat(inputs.ng.value) || 0;
+    const pp = parseFloat(inputs.pp.value) || 0;
+    const exs = parseFloat(inputs.exs.value) || 925;
+
+    if (y === 0 || agw === 0 || xag === 0) {
+        clearSilverDisplay();
+        return;
+    }
+
+    const ag = agw / OUNCE_TO_GRAM;
+    const ag_egp = ag * y;
+    const localUsdRate = xag / y;
+
+    // Local prices
+    const local_999 = xag;
+    const local_925 = (925 / 1000) * xag;
+    const local_900 = (900 / 1000) * xag;
+    const local_825 = (825 / 1000) * xag;
+    const local_800 = (800 / 1000) * xag;
+    const local_600 = (600 / 1000) * xag;
+    const local_exs = (exs / 1000) * xag;
+
+    // Global prices USD
+    const global_999 = ag;
+    const global_925 = (925 / 1000) * ag;
+    const global_900 = (900 / 1000) * ag;
+    const global_825 = (825 / 1000) * ag;
+    const global_800 = (800 / 1000) * ag;
+    const global_600 = (600 / 1000) * ag;
+
+    // Global prices EGP
+    const global_999_egp = ag_egp;
+    const global_925_egp = (925 / 1000) * ag_egp;
+    const global_900_egp = (900 / 1000) * ag_egp;
+    const global_825_egp = (825 / 1000) * ag_egp;
+    const global_800_egp = (800 / 1000) * ag_egp;
+    const global_600_egp = (600 / 1000) * ag_egp;
+
+    // SDP
+    const sdp = (xag * OUNCE_TO_GRAM) / agw;
+
+    // Gap
+    const gap_silver = sdp - y;
+    const gap_silver_percent = y > 0 ? (gap_silver / y) * 100 : 0;
+
+    // Premium
+    const premium_value = ng > 0 ? (pp / ng) - xag : 0;
+    const premium_percent = xag > 0 ? (premium_value / xag) * 100 : 0;
+    const ppgs = (global_999_egp * exs) / 1000;
+
+    // Update Local
+    document.getElementById('silver-local-999').textContent = formatCurrency(local_999);
+    document.getElementById('silver-local-925').textContent = formatCurrency(local_925);
+    document.getElementById('silver-local-900').textContent = formatCurrency(local_900);
+    document.getElementById('silver-local-825').textContent = formatCurrency(local_825);
+    document.getElementById('silver-local-800').textContent = formatCurrency(local_800);
+    document.getElementById('silver-local-600').textContent = formatCurrency(local_600);
+    document.getElementById('silver-local-exs').textContent = formatCurrency(local_exs);
+
+    // Global USD
+    document.getElementById('silver-global-ounce').textContent = formatCurrency(agw, '$');
+    document.getElementById('silver-global-999').textContent = formatCurrency(global_999, '$');
+    document.getElementById('silver-global-925').textContent = formatCurrency(global_925, '$');
+    document.getElementById('silver-global-900').textContent = formatCurrency(global_900, '$');
+    document.getElementById('silver-global-825').textContent = formatCurrency(global_825, '$');
+    document.getElementById('silver-global-800').textContent = formatCurrency(global_800, '$');
+    document.getElementById('silver-global-600').textContent = formatCurrency(global_600, '$');
+
+    // Global EGP
+    document.getElementById('silver-global-999-egp').textContent = formatCurrency(global_999_egp);
+    document.getElementById('silver-global-925-egp').textContent = formatCurrency(global_925_egp);
+    document.getElementById('silver-global-900-egp').textContent = formatCurrency(global_900_egp);
+    document.getElementById('silver-global-825-egp').textContent = formatCurrency(global_825_egp);
+    document.getElementById('silver-global-800-egp').textContent = formatCurrency(global_800_egp);
+    document.getElementById('silver-global-600-egp').textContent = formatCurrency(global_600_egp);
+
+    // Real
+    document.getElementById('silver-sdp').textContent = formatCurrency(sdp, '$');
+
+    // Gap
+    document.getElementById('gap-silver-value').textContent = formatCurrency(gap_silver, '$');
+    document.getElementById('gap-silver-percent').textContent = formatNumber(gap_silver_percent) + '%';
+
+    // Premium
+    document.getElementById('silver-premium-value').textContent = formatCurrency(premium_value);
+    document.getElementById('silver-premium-percent').textContent = formatNumber(premium_percent) + '%';
+    document.getElementById('silver-ppgs').textContent = formatCurrency(ppgs);
+
+    // Formulas
+    document.getElementById('formula-ag').textContent = formatCurrency(ag, '$');
+    document.getElementById('formula-e999').textContent = formatCurrency(global_999, '$');
+    document.getElementById('formula-e925').textContent = formatCurrency(global_925, '$');
+    document.getElementById('formula-e900').textContent = formatCurrency(global_900, '$');
+    document.getElementById('formula-e825').textContent = formatCurrency(global_825, '$');
+    document.getElementById('formula-e800').textContent = formatCurrency(global_800, '$');
+    document.getElementById('formula-e600').textContent = formatCurrency(global_600, '$');
+    document.getElementById('formula-exs').textContent = formatCurrency((exs / 1000) * ag, '$');
+    document.getElementById('formula-sdp').textContent = formatCurrency(sdp, '$');
+    document.getElementById('formula-lig-silver').textContent = formatCurrency(gap_silver, '$');
+    document.getElementById('formula-ppgs').textContent = formatCurrency(ppgs);
+
+    // Generate Karat Grids
+    const silverPurities = [999, 925, 900, 825, 800, 600];
+    let localKaratHtml = '';
+    let globalKaratHtml = '';
+    let comparisonKaratHtml = '';
+
+    silverPurities.forEach(p => {
+        const localPrice = (p / 1000) * xag;
+        const globalPriceEgp = (p / 1000) * ag_egp;
+        const globalPriceUsd = (p / 1000) * ag;
+        const localPriceUsd = localPrice / y;
+
+        localKaratHtml += createSilverKaratCard(p, localPrice, globalPriceEgp, localPriceUsd, globalPriceUsd);
+        globalKaratHtml += createSilverKaratCard(p, localPrice, globalPriceEgp, localPriceUsd, globalPriceUsd);
+        comparisonKaratHtml += createSilverKaratCard(p, localPrice, globalPriceEgp, localPriceUsd, globalPriceUsd);
+    });
+
+    // Add custom purity
+    const customLocalPrice = (exs / 1000) * xag;
+    const customGlobalPriceEgp = (exs / 1000) * ag_egp;
+    const customGlobalPriceUsd = (exs / 1000) * ag;
+    const customLocalPriceUsd = customLocalPrice / y;
+    comparisonKaratHtml += createSilverKaratCard(exs, customLocalPrice, customGlobalPriceEgp, customLocalPriceUsd, customGlobalPriceUsd);
+
+    document.getElementById('silver-local-karat-grid').innerHTML = localKaratHtml;
+    document.getElementById('silver-global-karat-grid').innerHTML = globalKaratHtml;
+    document.getElementById('silver-comparison-karat-grid').innerHTML = comparisonKaratHtml;
+
+    updateSilverCodes(ag, agw, xag, y, sdp, gap_silver, gap_silver_percent, premium_value, premium_percent, ppgs, exs, localUsdRate);
+}
+
+function updateGoldCodes(au, auw, xau, y, gdp, gap, gap_percent, local_21, premium_value, premium_percent, ppgg, exg, localUsdRate) {
+    const isAr = currentLang === 'ar';
+    const coin_1 = local_21 * 8;
+    const coin_1_2 = local_21 * 4;
+    const coin_1_4 = local_21 * 2;
+    const coin_5 = local_21 * 40;
+
+    const localText = isAr ?
+        `=== الذهب المحلي ===
+24K: ${formatCurrency(xau)}
+22K: ${formatCurrency((22/24)*xau)}
+21K: ${formatCurrency((21/24)*xau)}
+18K: ${formatCurrency((18/24)*xau)}
+14K: ${formatCurrency((14/24)*xau)}
+12K: ${formatCurrency((12/24)*xau)}
+9K: ${formatCurrency((9/24)*xau)}
+عيار ${exg}: ${formatCurrency((exg/24)*xau)}` :
+        `=== Gold Local ===
+24K: ${formatCurrency(xau)}
+22K: ${formatCurrency((22/24)*xau)}
+21K: ${formatCurrency((21/24)*xau)}
+18K: ${formatCurrency((18/24)*xau)}
+14K: ${formatCurrency((14/24)*xau)}
+12K: ${formatCurrency((12/24)*xau)}
+9K: ${formatCurrency((9/24)*xau)}
+Custom ${exg}: ${formatCurrency((exg/24)*xau)}`;
+    document.getElementById('gold-local-code-content').textContent = localText;
+
+    const coinsText = isAr ?
+        `=== الجنيهات الذهبية ===
+1 جنيه: ${formatCurrency(coin_1)}
+1/2 جنيه: ${formatCurrency(coin_1_2)}
+1/4 جنيه: ${formatCurrency(coin_1_4)}
+5 جنيهات: ${formatCurrency(coin_5)}` :
+        `=== Gold Coins ===
+1 Pound: ${formatCurrency(coin_1)}
+1/2 Pound: ${formatCurrency(coin_1_2)}
+1/4 Pound: ${formatCurrency(coin_1_4)}
+5 Pounds: ${formatCurrency(coin_5)}`;
+    document.getElementById('gold-coins-code-content').textContent = coinsText;
+
+    const globalText = isAr ?
+        `=== الذهب العالمي (دولار) ===
+أونصة: ${formatCurrency(auw, '$')}
+24K: ${formatCurrency(au, '$')}
+22K: ${formatCurrency((22/24)*au, '$')}
+21K: ${formatCurrency((21/24)*au, '$')}
+18K: ${formatCurrency((18/24)*au, '$')}
+14K: ${formatCurrency((14/24)*au, '$')}
+12K: ${formatCurrency((12/24)*au, '$')}
+9K: ${formatCurrency((9/24)*au, '$')}` :
+        `=== Gold Global (USD) ===
+Ounce: ${formatCurrency(auw, '$')}
+24K: ${formatCurrency(au, '$')}
+22K: ${formatCurrency((22/24)*au, '$')}
+21K: ${formatCurrency((21/24)*au, '$')}
+18K: ${formatCurrency((18/24)*au, '$')}
+14K: ${formatCurrency((14/24)*au, '$')}
+12K: ${formatCurrency((12/24)*au, '$')}
+9K: ${formatCurrency((9/24)*au, '$')}`;
+    document.getElementById('gold-global-code-content').textContent = globalText;
+
+    const globalEgpText = isAr ?
+        `=== الذهب العالمي (جنيه) ===
+24K: ${formatCurrency(au*y)}
+22K: ${formatCurrency((22/24)*au*y)}
+21K: ${formatCurrency((21/24)*au*y)}
+18K: ${formatCurrency((18/24)*au*y)}
+14K: ${formatCurrency((14/24)*au*y)}
+12K: ${formatCurrency((12/24)*au*y)}
+9K: ${formatCurrency((9/24)*au*y)}` :
+        `=== Gold Global (EGP) ===
+24K: ${formatCurrency(au*y)}
+22K: ${formatCurrency((22/24)*au*y)}
+21K: ${formatCurrency((21/24)*au*y)}
+18K: ${formatCurrency((18/24)*au*y)}
+14K: ${formatCurrency((14/24)*au*y)}
+12K: ${formatCurrency((12/24)*au*y)}
+9K: ${formatCurrency((9/24)*au*y)}`;
+    document.getElementById('gold-global-egp-code-content').textContent = globalEgpText;
+
+    const comparisonText = isAr ?
+        `=== مقارنة الذهب الشاملة ===
+المحلي (ج.م) | العالمي (ج.م) | المحلي ($) | العالمي ($)
+24K: ${formatCurrency(xau)} | ${formatCurrency(au*y)} | ${formatCurrency(localUsdRate, '$')} | ${formatCurrency(au, '$')}` :
+        `=== Gold Full Comparison ===
+Local (EGP) | Global (EGP) | Local ($) | Global ($)
+24K: ${formatCurrency(xau)} | ${formatCurrency(au*y)} | ${formatCurrency(localUsdRate, '$')} | ${formatCurrency(au, '$')}`;
+    document.getElementById('gold-comparison-code-content').textContent = comparisonText;
+
+    const realText = isAr ?
+        `=== الذهب الحقيقي ===
+GDP: ${formatCurrency(gdp, '$')}
+الفجوة: ${formatCurrency(gap, '$')} (${formatNumber(gap_percent)}%)
+المعادلة: (XAU × 31.103) ÷ AUW` :
+        `=== Gold Real ===
+GDP: ${formatCurrency(gdp, '$')}
+Gap: ${formatCurrency(gap, '$')} (${formatNumber(gap_percent)}%)
+Formula: (XAU × 31.103) ÷ AUW`;
+    document.getElementById('gold-dollar-gap-code-content').textContent = realText;
+
+    const premiumText = isAr ?
+        `=== مصنعية الذهب ===
+قيمة المصنعية: ${formatCurrency(premium_value)}
+نسبة المصنعية: ${formatNumber(premium_percent)}%
+سعر الجرام: ${formatCurrency(ppgg)}` :
+        `=== Gold Premium ===
+Premium Value: ${formatCurrency(premium_value)}
+Premium %: ${formatNumber(premium_percent)}%
+Price Per Gram: ${formatCurrency(ppgg)}`;
+    document.getElementById('gold-premium-code-content').textContent = premiumText;
+}
+
+function updateSilverCodes(ag, agw, xag, y, sdp, gap, gap_percent, premium_value, premium_percent, ppgs, exs, localUsdRate) {
+    const isAr = currentLang === 'ar';
+
+    const localText = isAr ?
+        `=== الفضة المحلية ===
+999: ${formatCurrency(xag)}
+925: ${formatCurrency((925/1000)*xag)}
+900: ${formatCurrency((900/1000)*xag)}
+825: ${formatCurrency((825/1000)*xag)}
+800: ${formatCurrency((800/1000)*xag)}
+600: ${formatCurrency((600/1000)*xag)}
+عيار ${exs}: ${formatCurrency((exs/1000)*xag)}` :
+        `=== Silver Local ===
+999: ${formatCurrency(xag)}
+925: ${formatCurrency((925/1000)*xag)}
+900: ${formatCurrency((900/1000)*xag)}
+825: ${formatCurrency((825/1000)*xag)}
+800: ${formatCurrency((800/1000)*xag)}
+600: ${formatCurrency((600/1000)*xag)}
+Custom ${exs}: ${formatCurrency((exs/1000)*xag)}`;
+    document.getElementById('silver-local-code-content').textContent = localText;
+
+    const globalText = isAr ?
+        `=== الفضة العالمية (دولار) ===
+أونصة: ${formatCurrency(agw, '$')}
+999: ${formatCurrency(ag, '$')}
+925: ${formatCurrency((925/1000)*ag, '$')}
+900: ${formatCurrency((900/1000)*ag, '$')}
+825: ${formatCurrency((825/1000)*ag, '$')}
+800: ${formatCurrency((800/1000)*ag, '$')}
+600: ${formatCurrency((600/1000)*ag, '$')}` :
+        `=== Silver Global (USD) ===
+Ounce: ${formatCurrency(agw, '$')}
+999: ${formatCurrency(ag, '$')}
+925: ${formatCurrency((925/1000)*ag, '$')}
+900: ${formatCurrency((900/1000)*ag, '$')}
+825: ${formatCurrency((825/1000)*ag, '$')}
+800: ${formatCurrency((800/1000)*ag, '$')}
+600: ${formatCurrency((600/1000)*ag, '$')}`;
+    document.getElementById('silver-global-code-content').textContent = globalText;
+
+    const globalEgpText = isAr ?
+        `=== الفضة العالمية (جنيه) ===
+999: ${formatCurrency(ag*y)}
+925: ${formatCurrency((925/1000)*ag*y)}
+900: ${formatCurrency((900/1000)*ag*y)}
+825: ${formatCurrency((825/1000)*ag*y)}
+800: ${formatCurrency((800/1000)*ag*y)}
+600: ${formatCurrency((600/1000)*ag*y)}` :
+        `=== Silver Global (EGP) ===
+999: ${formatCurrency(ag*y)}
+925: ${formatCurrency((925/1000)*ag*y)}
+900: ${formatCurrency((900/1000)*ag*y)}
+825: ${formatCurrency((825/1000)*ag*y)}
+800: ${formatCurrency((800/1000)*ag*y)}
+600: ${formatCurrency((600/1000)*ag*y)}`;
+    document.getElementById('silver-global-egp-code-content').textContent = globalEgpText;
+
+    const comparisonText = isAr ?
+        `=== مقارنة الفضة الشاملة ===
+المحلي (ج.م) | العالمي (ج.م) | المحلي ($) | العالمي ($)
+999: ${formatCurrency(xag)} | ${formatCurrency(ag*y)} | ${formatCurrency(localUsdRate, '$')} | ${formatCurrency(ag, '$')}` :
+        `=== Silver Full Comparison ===
+Local (EGP) | Global (EGP) | Local ($) | Global ($)
+999: ${formatCurrency(xag)} | ${formatCurrency(ag*y)} | ${formatCurrency(localUsdRate, '$')} | ${formatCurrency(ag, '$')}`;
+    document.getElementById('silver-comparison-code-content').textContent = comparisonText;
+
+    const realText = isAr ?
+        `=== الفضة الحقيقية ===
+SDP: ${formatCurrency(sdp, '$')}
+الفجوة: ${formatCurrency(gap, '$')} (${formatNumber(gap_percent)}%)
+المعادلة: (XAG × 31.103) ÷ AGW` :
+        `=== Silver Real ===
+SDP: ${formatCurrency(sdp, '$')}
+Gap: ${formatCurrency(gap, '$')} (${formatNumber(gap_percent)}%)
+Formula: (XAG × 31.103) ÷ AGW`;
+    document.getElementById('silver-dollar-gap-code-content').textContent = realText;
+
+    const premiumText = isAr ?
+        `=== مصنعية الفضة ===
+قيمة المصنعية: ${formatCurrency(premium_value)}
+نسبة المصنعية: ${formatNumber(premium_percent)}%
+سعر الجرام: ${formatCurrency(ppgs)}` :
+        `=== Silver Premium ===
+Premium Value: ${formatCurrency(premium_value)}
+Premium %: ${formatNumber(premium_percent)}%
+Price Per Gram: ${formatCurrency(ppgs)}`;
+    document.getElementById('silver-premium-code-content').textContent = premiumText;
+}
+
+function clearGoldDisplay() {
+    const ids = [
+        'gold-local-24', 'gold-local-22', 'gold-local-21', 'gold-local-18', 'gold-local-14', 'gold-local-12', 'gold-local-9', 'gold-local-exg',
+        'gold-coin-1', 'gold-coin-1-2', 'gold-coin-1-4', 'gold-coin-5',
+        'gold-global-ounce', 'gold-global-24', 'gold-global-22', 'gold-global-21', 'gold-global-18', 'gold-global-14', 'gold-global-12', 'gold-global-9',
+        'gold-global-24-egp', 'gold-global-22-egp', 'gold-global-21-egp', 'gold-global-18-egp', 'gold-global-14-egp', 'gold-global-12-egp', 'gold-global-9-egp',
+        'gold-gdp', 'gold-premium-value', 'gold-premium-percent', 'gold-ppgg',
+        'gap-gold-value', 'gap-gold-percent',
+        'formula-au', 'formula-e24', 'formula-e22', 'formula-e21', 'formula-e18', 'formula-e14', 'formula-e12', 'formula-e9', 'formula-exg', 'formula-gdp', 'formula-lig', 'formula-ppgg', 'formula-1egpg', 'formula-1-2egpg', 'formula-1-4egpg', 'formula-5egpg'
+    ];
+    ids.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.textContent = '-';
+    });
+    ['gold-local-karat-grid', 'gold-global-karat-grid', 'gold-comparison-karat-grid'].forEach(id => {
+        document.getElementById(id).innerHTML = '';
+    });
+    ['gold-local-code-content', 'gold-coins-code-content', 'gold-global-code-content', 'gold-global-egp-code-content', 'gold-comparison-code-content', 'gold-dollar-gap-code-content', 'gold-premium-code-content'].forEach(id => {
+        document.getElementById(id).textContent = '-';
+    });
+}
+
+function clearSilverDisplay() {
+    const ids = [
+        'silver-local-999', 'silver-local-925', 'silver-local-900', 'silver-local-825', 'silver-local-800', 'silver-local-600', 'silver-local-exs',
+        'silver-global-ounce', 'silver-global-999', 'silver-global-925', 'silver-global-900', 'silver-global-825', 'silver-global-800', 'silver-global-600',
+        'silver-global-999-egp', 'silver-global-925-egp', 'silver-global-900-egp', 'silver-global-825-egp', 'silver-global-800-egp', 'silver-global-600-egp',
+        'silver-sdp', 'silver-premium-value', 'silver-premium-percent', 'silver-ppgs',
+        'gap-silver-value', 'gap-silver-percent',
+        'formula-ag', 'formula-e999', 'formula-e925', 'formula-e900', 'formula-e825', 'formula-e800', 'formula-e600', 'formula-exs', 'formula-sdp', 'formula-lig-silver', 'formula-ppgs'
+    ];
+    ids.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.textContent = '-';
+    });
+    ['silver-local-karat-grid', 'silver-global-karat-grid', 'silver-comparison-karat-grid'].forEach(id => {
+        document.getElementById(id).innerHTML = '';
+    });
+    ['silver-local-code-content', 'silver-global-code-content', 'silver-global-egp-code-content', 'silver-comparison-code-content', 'silver-dollar-gap-code-content', 'silver-premium-code-content'].forEach(id => {
+        document.getElementById(id).textContent = '-';
+    });
+}
+
+function calculate() {
+    calculateGold();
+    calculateSilver();
+    updateCombinedFormulas();
+}
+
+function updateCombinedFormulas() {
+    const isAr = currentLang === 'ar';
+    const y = parseFloat(inputs.y.value) || 0;
+    const auw = parseFloat(inputs.auw.value) || 0;
+    const agw = parseFloat(inputs.agw.value) || 0;
+    const xau = parseFloat(inputs.xau.value) || 0;
+    const xag = parseFloat(inputs.xag.value) || 0;
+    const exg = parseFloat(inputs.exg.value) || 24;
+    const exs = parseFloat(inputs.exs.value) || 925;
+
+    const au = auw / OUNCE_TO_GRAM;
+    const ag = agw / OUNCE_TO_GRAM;
+    const gdp = (xau * OUNCE_TO_GRAM) / auw;
+    const sdp = (xag * OUNCE_TO_GRAM) / agw;
+    const gap_gold = gdp - y;
+    const gap_silver = sdp - y;
+
+    let goldHtml = '';
+    const goldFormulas = [
+        { label: 'AU', formula: 'AUW ÷ 31.103', value: formatCurrency(au, '$') },
+        { label: 'E24', formula: '1 × AU', value: formatCurrency(au, '$') },
+        { label: 'E22', formula: '(22/24) × AU', value: formatCurrency((22/24)*au, '$') },
+        { label: 'E21', formula: '(21/24) × AU', value: formatCurrency((21/24)*au, '$') },
+        { label: 'GDP', formula: '(XAU × 31.103) ÷ AUW', value: formatCurrency(gdp, '$') },
+        { label: 'LIG', formula: 'GDP - Y', value: formatCurrency(gap_gold, '$') }
+    ];
+    goldFormulas.forEach(f => {
+        goldHtml += `<div class="combined-formula"><div class="formula-label">${f.label}: ${f.formula}</div><div class="formula-value">${f.value}</div></div>`;
+    });
+    document.getElementById('combined-gold-formulas').innerHTML = goldHtml;
+
+    let silverHtml = '';
+    const silverFormulas = [
+        { label: 'AG', formula: 'AGW ÷ 31.103', value: formatCurrency(ag, '$') },
+        { label: 'E999', formula: '1 × AG', value: formatCurrency(ag, '$') },
+        { label: 'E925', formula: '(925/1000) × AG', value: formatCurrency((925/1000)*ag, '$') },
+        { label: 'E900', formula: '(900/1000) × AG', value: formatCurrency((900/1000)*ag, '$') },
+        { label: 'SDP', formula: '(XAG × 31.103) ÷ AGW', value: formatCurrency(sdp, '$') },
+        { label: 'LIG', formula: 'SDP - Y', value: formatCurrency(gap_silver, '$') }
+    ];
+    silverFormulas.forEach(f => {
+        silverHtml += `<div class="combined-formula"><div class="formula-label">${f.label}: ${f.formula}</div><div class="formula-value">${f.value}</div></div>`;
+    });
+    document.getElementById('combined-silver-formulas').innerHTML = silverHtml;
+
+    const combinedText = isAr ?
+        `=== معادلات الذهب ===
+AU = ${formatCurrency(au, '$')}
+E24 = ${formatCurrency(au, '$')}
+E22 = ${formatCurrency((22/24)*au, '$')}
+E21 = ${formatCurrency((21/24)*au, '$')}
+GDP = ${formatCurrency(gdp, '$')}
+LIG = ${formatCurrency(gap_gold, '$')}
+=== معادلات الفضة ===
+AG = ${formatCurrency(ag, '$')}
+E999 = ${formatCurrency(ag, '$')}
+E925 = ${formatCurrency((925/1000)*ag, '$')}
+SDP = ${formatCurrency(sdp, '$')}
+LIG = ${formatCurrency(gap_silver, '$')}` :
+        `=== Gold Formulas ===
+AU = ${formatCurrency(au, '$')}
+E24 = ${formatCurrency(au, '$')}
+E22 = ${formatCurrency((22/24)*au, '$')}
+E21 = ${formatCurrency((21/24)*au, '$')}
+GDP = ${formatCurrency(gdp, '$')}
+LIG = ${formatCurrency(gap_gold, '$')}
+=== Silver Formulas ===
+AG = ${formatCurrency(ag, '$')}
+E999 = ${formatCurrency(ag, '$')}
+E925 = ${formatCurrency((925/1000)*ag, '$')}
+SDP = ${formatCurrency(sdp, '$')}
+LIG = ${formatCurrency(gap_silver, '$')}`;
+    document.getElementById('combined-code-content').textContent = combinedText;
+}
+
+function copySection(sectionId) {
+    const contentEl = document.getElementById(sectionId + '-code-content');
+    if (contentEl) {
+        navigator.clipboard.writeText(contentEl.textContent).then(() => {
+            alert(currentLang === 'ar' ? 'تم النسخ!' : 'Copied!');
+        });
+    }
+}
+
+function copyCode(codeId) {
+    const contentEl = document.getElementById(codeId + '-content');
+    if (contentEl) {
+        navigator.clipboard.writeText(contentEl.textContent).then(() => {
+            alert(currentLang === 'ar' ? 'تم النسخ!' : 'Copied!');
+        });
+    }
+}
+
+// Hide buttons before screenshot, show after
+async function downloadSection(sectionId) {
+    const sectionEl = document.getElementById(sectionId);
+    if (sectionEl) {
+        // Hide all action buttons
+        const allButtons = sectionEl.querySelectorAll('.action-buttons, .action-btn, .copy-code-btn, .download-code-btn');
+        allButtons.forEach(btn => btn.classList.add('hide-for-screenshot'));
+        
+        try {
+            const canvas = await html2canvas(sectionEl, { 
+                backgroundColor: '#16213e', 
+                scale: 2,
+                ignoreElements: (element) => element.classList.contains('hide-for-screenshot')
+            });
+            const link = document.createElement('a');
+            link.download = sectionId + '.png';
+            link.href = canvas.toDataURL('image/png');
+            link.click();
+        } catch (err) {
+            console.error('Error:', err);
+        } finally {
+            // Show buttons again
+            allButtons.forEach(btn => btn.classList.remove('hide-for-screenshot'));
+        }
+    }
+}
+
+async function downloadCode(codeId) {
+    const codeEl = document.getElementById(codeId);
+    if (codeEl) {
+        // Hide buttons
+        const buttons = codeEl.querySelectorAll('.copy-code-btn, .download-code-btn');
+        buttons.forEach(btn => btn.classList.add('hide-for-screenshot'));
+        
+        try {
+            const canvas = await html2canvas(codeEl, { 
+                backgroundColor: '#0d0d1a', 
+                scale: 2,
+                ignoreElements: (element) => element.classList.contains('hide-for-screenshot')
+            });
+            const link = document.createElement('a');
+            link.download = codeId + '.png';
+            link.href = canvas.toDataURL('image/png');
+            link.click();
+        } catch (err) {
+            console.error('Error:', err);
+        } finally {
+            // Show buttons again
+            buttons.forEach(btn => btn.classList.remove('hide-for-screenshot'));
+        }
+    }
+}
+
+Object.values(inputs).forEach(input => input.addEventListener('input', calculate));
+calculate();
+</script>
+</body>
+</html>
+
